@@ -1,2 +1,2 @@
 # SORLPER
-模拟海马体和新皮质学习机制：一种具有优先经验回放的自组织强化学习方法
+Modeling hippocampal and neocortical learning mechanisms: a self-organizing reinforcement learning approach with with priority experience replay
