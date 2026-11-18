@@ -1,0 +1,6 @@
+<robot name="autolabor_pro1_he" xmlns:xacro="http://wiki.ros.org/xacro">
+    <xacro:include filename="dynamic_obstacle.xacro" />
+    <xacro:include filename="drive_control.xacro" />
+    <xacro:include filename="my_sensors_laser.xacro" />
+    <xacro:include filename="imu_sensor.xacro" />  
+</robot>

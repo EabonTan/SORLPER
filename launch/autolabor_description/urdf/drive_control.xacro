@@ -1,0 +1,119 @@
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <!-- ========================================================= -->
+    <!-- Namespace parameter -->
+    <!-- ========================================================= -->
+
+    <xacro:arg name="robot_namespace" default="autolabor_pro1"/>
+
+    <!-- ========================================================= -->
+    <!-- Transmission -->
+    <!-- ========================================================= -->
+
+    <xacro:macro name="joint_trans" params="joint_name">
+        <transmission name="${joint_name}_trans">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="${joint_name}">
+                <hardwareInterface>
+                    hardware_interface/VelocityJointInterface
+                </hardwareInterface>
+            </joint>
+            <actuator name="${joint_name}_motor">
+                <hardwareInterface>
+                    hardware_interface/VelocityJointInterface
+                </hardwareInterface>
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+        </transmission>
+    </xacro:macro>
+
+    <xacro:joint_trans joint_name="joint_left_front"/>
+    <xacro:joint_trans joint_name="joint_left_back"/>
+    <xacro:joint_trans joint_name="joint_right_front"/>
+    <xacro:joint_trans joint_name="joint_right_back"/>
+
+
+    <!-- ========================================================= -->
+    <!-- Front Differential Drive -->
+    <!-- ========================================================= -->
+
+    <gazebo>
+        <plugin name="differential_drive_controller_front"
+                filename="libgazebo_ros_diff_drive.so">
+
+            <rosDebugLevel>na</rosDebugLevel>
+
+            <publishWheelTF>false</publishWheelTF>
+
+            <robotNamespace>/$(arg robot_namespace)</robotNamespace>
+
+            <publishTf>true</publishTf>
+            <publishWheelJointState>false</publishWheelJointState>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>30.0</updateRate>
+            <legacyMode>true</legacyMode>
+
+            <leftJoint>joint_left_front</leftJoint>
+            <rightJoint>joint_right_front</rightJoint>
+
+            <wheelSeparation>${shaft_spacing_f + shaft_spacing_b}</wheelSeparation>
+            <wheelDiameter>0.254</wheelDiameter>
+
+            <broadcastTF>1</broadcastTF>
+            <wheelTorque>50</wheelTorque>
+            <wheelAcceleration>1.8</wheelAcceleration>
+
+            <commandTopic>cmd_vel</commandTopic>
+
+            <odometryFrame>odom</odometryFrame>
+            <odometryTopic>odom</odometryTopic>
+            <robotBaseFrame>base_footprint</robotBaseFrame>
+
+            <publishOdomTF>false</publishOdomTF>
+
+        </plugin>
+    </gazebo>
+
+
+    <!-- ========================================================= -->
+    <!-- Back Differential Drive -->
+    <!-- ========================================================= -->
+
+    <gazebo>
+        <plugin name="differential_drive_controller_back"
+                filename="libgazebo_ros_diff_drive.so">
+
+            <rosDebugLevel>na</rosDebugLevel>
+
+            <publishWheelTF>false</publishWheelTF>
+
+            <robotNamespace>/$(arg robot_namespace)</robotNamespace>
+
+            <publishTf>true</publishTf>
+            <publishWheelJointState>false</publishWheelJointState>
+            <alwaysOn>true</alwaysOn>
+            <updateRate>30.0</updateRate>
+            <legacyMode>true</legacyMode>
+
+            <leftJoint>joint_left_back</leftJoint>
+            <rightJoint>joint_right_back</rightJoint>
+
+            <wheelSeparation>${shaft_spacing_f + shaft_spacing_b}</wheelSeparation>
+            <wheelDiameter>0.254</wheelDiameter>
+
+            <broadcastTF>1</broadcastTF>
+            <wheelTorque>50</wheelTorque>
+            <wheelAcceleration>1.8</wheelAcceleration>
+
+            <commandTopic>cmd_vel</commandTopic>
+
+            <odometryFrame>odom</odometryFrame>
+            <odometryTopic>odom</odometryTopic>
+            <robotBaseFrame>base_footprint</robotBaseFrame>
+
+            <publishOdomTF>true</publishOdomTF>
+
+        </plugin>
+    </gazebo>
+
+</robot>
