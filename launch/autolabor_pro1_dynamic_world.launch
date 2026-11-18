@@ -1,0 +1,150 @@
+<launch>
+
+    <!-- ========================================================= -->
+    <!-- 1. Gazebo World -->
+    <!-- ========================================================= -->
+
+    <!-- <arg name="world_file"
+         default="$(find autolabor_navigation_launch)/worlds/dynamic_env.world"/> -->
+
+    <arg name="world_file"
+         default="$(find autolabor_navigation_launch)/worlds/dynamic_env2.world"/>
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(arg world_file)"/>
+        <arg name="paused" value="false"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>
+        <arg name="headless" value="false"/>
+        <arg name="debug" value="false"/>
+    </include>
+
+
+    <!-- ========================================================= -->
+    <!-- 2. Main Robot: autolabor_pro1 -->
+    <!-- ========================================================= -->
+
+    <param name="robot_description"
+           command="$(find xacro)/xacro --inorder
+           $(find autolabor_description)/urdf/integration.xacro
+           robot_namespace:=autolabor_pro1
+           has_laser:=true"/>
+
+    <!-- Joint states for the main robot -->
+    <node pkg="joint_state_publisher"
+          type="joint_state_publisher"
+          name="autolabor_pro1_joint_state_publisher"
+          output="screen">
+
+        <param name="use_gui" value="false"/>
+
+    </node>
+
+    <!-- Robot state publisher for the main robot -->
+    <node pkg="robot_state_publisher"
+          type="robot_state_publisher"
+          name="autolabor_pro1_state_publisher"
+          output="screen">
+
+        <param name="publish_frequency" value="10.0"/>
+
+    </node>
+
+    <!-- Spawn main robot -->
+    <node pkg="gazebo_ros"
+          type="spawn_model"
+          name="spawn_autolabor_pro1"
+          output="screen"
+          args="-urdf
+                -param robot_description
+                -model autolabor_pro1
+                -x 0.0
+                -y 0.0
+                -z 0.0"/>
+
+
+    <!-- ========================================================= -->
+    <!-- 3. Dynamic Obstacle 1   2.3562 -->
+    <!-- ========================================================= -->
+
+    <param name="obs1_description"
+           command="$(find xacro)/xacro --inorder
+           $(find autolabor_description)/urdf/dynamic_obstacle_integration.xacro
+           robot_namespace:=obs1
+           has_laser:=false"/>
+
+    <node pkg="gazebo_ros"
+          type="spawn_model"
+          name="spawn_obs1"
+          output="screen"
+          args="-urdf
+                -param obs1_description
+                -model obs1
+                -x 1.3
+                -y 0.0
+                -z 0.0
+                -Y 1.5708"/>   
+
+
+    <!-- ========================================================= -->
+    <!-- 4. Dynamic Obstacle 2 -->
+    <!-- ========================================================= -->
+
+    <param name="obs2_description"
+           command="$(find xacro)/xacro --inorder
+           $(find autolabor_description)/urdf/dynamic_obstacle_integration.xacro
+           robot_namespace:=obs2
+           has_laser:=false"/>
+
+    <node pkg="gazebo_ros"
+          type="spawn_model"
+          name="spawn_obs2"
+          output="screen"
+          args="-urdf
+                -param obs2_description
+                -model obs2
+                -x -0.5
+                -y 3.0
+                -z 0.0"/>
+
+
+    <!-- ========================================================= -->
+    <!-- 5. Dynamic Obstacle 3 -->
+    <!-- ========================================================= -->
+
+    <param name="obs3_description"
+           command="$(find xacro)/xacro --inorder
+           $(find autolabor_description)/urdf/dynamic_obstacle_integration.xacro
+           robot_namespace:=obs3
+           has_laser:=false"/>
+
+    <node pkg="gazebo_ros"
+          type="spawn_model"
+          name="spawn_obs3"
+          output="screen"
+          args="-urdf
+                -param obs3_description
+                -model obs3
+                -x 3.5
+                -y 4.9
+                -z 0.0
+                -Y 3.1416"/>
+
+
+    <!-- ========================================================= -->
+    <!-- 6. Dynamic Obstacle Controller -->
+    <!-- ========================================================= -->
+
+    <node pkg="autolabor_navigation_launch"
+          type="dynamic_obstacle_controller.py"
+          name="dynamic_obstacle_controller"
+          output="screen"
+          respawn="false"/>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find autolabor_description)/rviz/urdf1.rviz" />  
+
+   
+    <node pkg="tf" type="static_transform_publisher" name="footprint_to_baselink" 
+          args="0 0 0 0 0 0 autolabor_pro1/base_footprint base_link 100" />
+
+</launch>
