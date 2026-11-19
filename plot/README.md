@@ -1,0 +1,1 @@
+The Python scripts in the `plot` folder are primarily used to visualize reward curves and average rewards during the training process. To generate these plots, the corresponding reward data files saved during model training must be loaded. Please ensure that the file paths are correctly specified.
