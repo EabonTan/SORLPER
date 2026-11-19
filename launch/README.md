@@ -1,1 +1,2 @@
-这个launch文件夹中的describe包含了Autolabor机器人的物理仿真模型，
+这个autolabor_description文件夹包含了Autolabor机器人的物理仿真模型.
+
